@@ -15,7 +15,7 @@ Static HTML, CSS and vanilla JS. No build step, no backend. Fonts are self-hoste
 4. Wait about a minute. The site will be at `https://USERNAME.github.io/REPOSITORY/`.
 
 ## Replace the URL placeholders (after the live address exists)
-Placeholder: `https://YOUR-DOMAIN/` (keep the trailing slash). It appears only in `index.html`, `sitemap.xml` and `robots.txt`. Replace it with your live address, for example `https://USERNAME.github.io/REPOSITORY/` or later `https://www.yourdomain.com/`.
+Placeholder: the placeholder `https://YOUR-DOMAIN/` (already replaced with `https://najkad.github.io/` in this version) (keep the trailing slash). It appears only in `index.html`, `sitemap.xml` and `robots.txt`. Replace it with your live address, for example `https://USERNAME.github.io/REPOSITORY/` or later `https://www.yourdomain.com/`.
 Terminal, run from the site root:
 `sed -i 's#https://YOUR-DOMAIN/#https://USERNAME.github.io/REPOSITORY/#g' index.html sitemap.xml robots.txt`
 Without a terminal: open those three files on GitHub, press the pencil icon, use find-and-replace, and commit. Until you do this the site works normally; only canonical, social previews, structured data and the sitemap are affected.
@@ -25,6 +25,10 @@ Settings, Pages, Custom domain, then add the DNS records GitHub lists, tick Enfo
 
 ## Client logos
 Bloocode Technology and Iseda Studio use the official logos supplied by the client (`assets/img/brands/`). Jasper Sterling Heights Estate has no official logo, so it is set in type and is not linked.
+
+## Videos
+Each video has a desktop file and a small `-m` file for phones and slow links; `js/main.js` picks one when the page loads. Hero: `hero.mp4` (720x1280, 2.8 MB) and `hero-m.mp4` (480x854, 1.3 MB). Studio and blanket videos: 540x960 and 360x640. All are H.264, 29.97 fps, silent, a keyframe every 2 seconds, with the index at the front of the file so playback starts before the download finishes. Only the hero downloads on first load; the others start loading shortly before their section scrolls into view or when played.
+To re-encode a replacement clip: `ffmpeg -i input.mov -an -vf scale=540:-2,format=yuv420p -c:v libx264 -preset medium -profile:v high -level 4.0 -crf 29 -maxrate 900k -bufsize 1800k -g 60 -keyint_min 30 -movflags +faststart output.mp4`
 
 ## Editing content
 Service text and gallery images are in the `CATS` array at the top of `js/main.js`. Add an image by exporting 640w and 1280w WebP files to `assets/img` and adding `im('file-name','alt text')`.

@@ -2,6 +2,9 @@
 'use strict';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const IMG='assets/img/', VID='assets/video/';
+const conn=navigator.connection||{};
+const lite=matchMedia('(max-width:860px)').matches||!!conn.saveData||/(^|-)(2g|3g)$/.test(conn.effectiveType||''); /* smaller video files on phones and slow links */
+const vsrc=f=>`${VID}${f}${lite?'-m':''}.mp4`;
 const WA_NUM='2349027450918';
 const waLink=t=>`https://wa.me/${WA_NUM}?text=${encodeURIComponent(t)}`;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -43,7 +46,7 @@ let vItems=[],vi=0,vFrom=null,vY=0;
 function vShow(){
   const m=vItems[vi]; vf.innerHTML='';
   let el;
-  if(m.t==='vid'){el=document.createElement('video');el.src=VID+m.f+'.mp4';el.poster=src(m);el.controls=true;el.playsInline=true;el.autoplay=true;el.loop=true;el.setAttribute('aria-label',m.alt)}
+  if(m.t==='vid'){el=document.createElement('video');el.src=vsrc(m.f);el.poster=src(m);el.controls=true;el.playsInline=true;el.autoplay=true;el.loop=true;el.setAttribute('aria-label',m.alt)}
   else{el=document.createElement('img');el.src=IMG+m.n+'-1280.webp';el.alt=m.alt}
   const cap=document.createElement('figcaption');cap.textContent=m.alt;vf.append(el,cap);
   const multi=vItems.length>1;vp.hidden=vn.hidden=!multi;vc.textContent=multi?`${vi+1} / ${vItems.length}`:'';
@@ -85,7 +88,7 @@ function initGal(c){
     items().forEach((m,k)=>{
       let e;
       if(m.t==='img'){e=new Image();e.src=`${IMG}${m.n}-1280.webp`;e.alt=m.alt;e.loading=k?'lazy':'eager'}
-      else{e=document.createElement('video');e.poster=`${IMG}${m.p}.webp`;e.src=VID+m.f+'.mp4';e.preload='none';e.muted=true;e.loop=true;e.playsInline=true;e.setAttribute('aria-label',m.alt)}
+      else{e=document.createElement('video');e.poster=`${IMG}${m.p}.webp`;e.src=vsrc(m.f);e.preload='none';e.muted=true;e.loop=true;e.playsInline=true;e.setAttribute('aria-label',m.alt)}
       frame.append(e);els.push(e);
     });
     const z=document.createElement('button');z.className='zoom';z.setAttribute('aria-label','Open larger view');z.onclick=()=>{const m=items()[i];if(m.t==='img')vOpen(items(),i,z);};frame.append(z);
@@ -157,16 +160,27 @@ $$('[data-ba]').forEach(ba=>{
 (()=>{
   const vb=$('#vb'),va=$('#va'),btn=$('#vplay'),rs=$('#vrestart'),vs=[vb,va];
   if(!vb||!va)return;
+  vb.src=vsrc('studio-before');va.src=vsrc('studio-after'); /* nothing downloads yet: preload is "none" */
   vs.forEach(v=>{v.muted=true;v.loop=false;v.removeAttribute('controls')});
+  let intent=false; /* true while the visitor wants both videos running */
   const label=on=>{btn.setAttribute('aria-pressed',on);btn.querySelector('span').textContent=on?'Pause both':(vs.every(v=>v.ended)?'Replay both':'Play both');btn.querySelector('use').setAttribute('href',on?'#i-pause':'#i-play')};
   const playing=()=>vs.some(v=>!v.paused&&!v.ended);
+  const live=()=>vs.filter(v=>!v.ended);
   const start=()=>{ /* a finished video holds its last frame unless both have finished */
     if(vs.every(v=>v.ended))vs.forEach(v=>{v.currentTime=0});
-    vs.forEach(v=>{v.preload='auto';if(!v.ended)v.play().catch(()=>{})});label(true)};
-  btn.onclick=()=>{if(playing()){vs.forEach(v=>v.pause());label(false)}else start()};
+    intent=true;vs.forEach(v=>{v.preload='auto';if(!v.ended)v.play().catch(()=>{})});label(true)};
+  const stop=()=>{intent=false;vs.forEach(v=>v.pause());label(false)};
+  btn.onclick=()=>{intent?stop():start()};
   rs.onclick=()=>{vs.forEach(v=>{v.pause();v.currentTime=0});start()};
-  vs.forEach(v=>v.addEventListener('ended',()=>{if(vs.every(x=>x.ended))label(false)}));
-  new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting&&playing()){vs.forEach(v=>v.pause());label(false)}}),{threshold:.1}).observe($('#vcmp'));
+  /* keep the pair in step: if one has to wait for data, hold the other, then release both together */
+  vs.forEach(v=>{
+    v.addEventListener('waiting',()=>{if(intent)live().filter(x=>x!==v).forEach(x=>x.pause())});
+    v.addEventListener('canplay',()=>{if(intent&&live().every(x=>x.readyState>=3))live().forEach(x=>x.play().catch(()=>{}))});
+    v.addEventListener('ended',()=>{if(vs.every(x=>x.ended)){intent=false;label(false)}});
+  });
+  /* start fetching just before the section scrolls into view (unless data-saver is on) */
+  if(!conn.saveData)new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){vs.forEach(v=>{if(v.preload==='none')v.preload='auto'});o.disconnect()}},{rootMargin:'700px 0px'}).observe($('#vcmp'));
+  new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting&&intent&&playing()){stop()}}),{threshold:.1}).observe($('#vcmp'));
 })();
 
 /* ---------- Header, menu, scroll ---------- */
@@ -197,8 +211,13 @@ $$('.rv,.mk').forEach(el=>ro.observe(el));
 /* hero */
 const hv=$('#heroVid');
 requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.add('ready')));
-const saver=navigator.connection&&navigator.connection.saveData;
-if(reduce||saver){hv.removeAttribute('autoplay');hv.pause()}
-else{hv.play().catch(()=>{});document.addEventListener('visibilitychange',()=>document.hidden?hv.pause():hv.play().catch(()=>{}))}
-new IntersectionObserver(es=>es.forEach(e=>{if(!reduce){e.isIntersecting?hv.play().catch(()=>{}):hv.pause()}})).observe(hv);
+if(hv.getAttribute('src')&&!reduce&&!conn.saveData){
+  /* start only once the browser reports it can play through (or after 3 s on slow links), so the first seconds are not choppy */
+  let ok=false,vis=true;
+  const go=()=>{if(ok&&vis&&!document.hidden)hv.play().catch(()=>{})};
+  const ready=()=>{if(!ok){ok=true;go()}};
+  if(hv.readyState>=4)ready();else{hv.addEventListener('canplaythrough',ready,{once:true});setTimeout(ready,3000)}
+  document.addEventListener('visibilitychange',()=>document.hidden?hv.pause():go());
+  new IntersectionObserver(es=>es.forEach(e=>{vis=e.isIntersecting;vis?go():hv.pause()})).observe(hv);
+}
 })();

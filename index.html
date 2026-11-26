@@ -6,22 +6,23 @@
 <meta name="description" content="NAJKAD is a Lagos-based interior decoration brand (est. 2015): home styling, office decoration, curtain making and installation, window blinds, furniture, wallpaper, rugs and bedding for clients worldwide.">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#2B1B10">
-<!-- Replace https://YOUR-DOMAIN/ in canonical, og:url, og:image, sitemap.xml and robots.txt once the final URL is known (see README). -->
-<link rel="canonical" href="https://YOUR-DOMAIN/">
+<!-- Canonical, og:url, og:image and structured-data URLs use the live GitHub Pages address. Update them (and sitemap.xml, robots.txt) if a custom domain is added later. -->
+<link rel="canonical" href="https://najkad.github.io/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="NAJKAD">
 <meta property="og:title" content="NAJKAD | Beautifying Spaces, Elevating Lifestyles">
 <meta property="og:description" content="Interior decoration, installation and product supply from Lagos, Nigeria, for clients worldwide.">
-<meta property="og:url" content="https://YOUR-DOMAIN/"><meta property="og:image" content="https://YOUR-DOMAIN/assets/img/og-najkad.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="NAJKAD logo: a gold letter N with curtain, blinds and cushion above the NAJKAD wordmark">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://YOUR-DOMAIN/assets/img/og-najkad.jpg">
+<meta property="og:url" content="https://najkad.github.io/"><meta property="og:image" content="https://najkad.github.io/assets/img/og-najkad.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="NAJKAD logo: a gold letter N with curtain, blinds and cushion above the NAJKAD wordmark">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://najkad.github.io/assets/img/og-najkad.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="assets/icons/favicon-48.png">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/img/hero-poster.webp">
+<link rel="preload" as="image" href="assets/img/hero-poster-m.webp" media="(max-width:860px)">
+<link rel="preload" as="image" href="assets/img/hero-poster.webp" media="(min-width:861px)">
 <link rel="stylesheet" href="css/styles.css">
 <script>document.documentElement.classList.add('js')</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"NAJKAD","description":"Interior decoration brand based in Lagos, Nigeria, serving clients worldwide.","foundingDate":"2015","telephone":["+2349027450918","+2348102480432"],"email":"najkadinterior@yahoo.com","address":{"@type":"PostalAddress","addressLocality":"Lagos","addressCountry":"NG"},"areaServed":"Worldwide","logo":"https://YOUR-DOMAIN/assets/img/najkad-logo.webp","sameAs":["https://www.instagram.com/najkad_curtains001","https://www.tiktok.com/@interiordecoratorinlagos"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"NAJKAD","description":"Interior decoration brand based in Lagos, Nigeria, serving clients worldwide.","foundingDate":"2015","telephone":["+2349027450918","+2348102480432"],"email":"najkadinterior@yahoo.com","address":{"@type":"PostalAddress","addressLocality":"Lagos","addressCountry":"NG"},"areaServed":"Worldwide","logo":"https://najkad.github.io/assets/img/najkad-logo.webp","sameAs":["https://www.instagram.com/najkad_curtains001","https://www.tiktok.com/@interiordecoratorinlagos"]}</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -65,7 +66,11 @@
 <!-- 01 HERO -->
 <section class="hero" id="top">
  <div class="hero-media">
-  <video id="heroVid" autoplay muted loop playsinline preload="metadata" poster="assets/img/hero-poster.webp" aria-hidden="true"><source src="assets/video/hero.mp4" type="video/mp4"></video>
+  <video id="heroVid" muted loop playsinline preload="auto" poster="assets/img/hero-poster.webp" aria-hidden="true"></video>
+  <script>/* pick the right-sized hero file before the browser starts downloading; skipped for reduced-motion and data-saver visitors (poster only) */
+  (function(){var v=document.getElementById('heroVid'),c=navigator.connection||{},m=matchMedia('(max-width:860px)').matches;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||c.saveData)return;
+  var lite=m||/(^|-)(2g|3g)$/.test(c.effectiveType||'');if(m)v.poster='assets/img/hero-poster-m.webp';v.src='assets/video/'+(lite?'hero-m':'hero')+'.mp4';})();</script>
  </div>
  <a class="scrollcue hx h5" href="#brands">Scroll</a>
  <div class="wrap">
@@ -136,8 +141,8 @@
    <div class="meta"><div class="no">02</div><h3 id="p2t">Studio interior</h3><p>A bare room transformed into a studio with acoustic wall panels and a warm LED ceiling line, shown in the original videos.</p><p class="hint">Silent videos. Press play to start; the shorter one holds its last frame.</p></div>
    <figure class="vcmp" id="vcmp">
     <div class="vgrid">
-     <div class="vcell"><video id="vb" muted playsinline preload="none" poster="assets/img/studio-before-poster-540.webp" width="540" height="960" aria-label="Studio before transformation"><source src="assets/video/studio-before.mp4" type="video/mp4"></video><span class="tg b">Before</span></div>
-     <div class="vcell"><video id="va" muted playsinline preload="none" poster="assets/img/studio-after-poster-540.webp" width="540" height="960" aria-label="Studio after transformation"><source src="assets/video/studio-after.mp4" type="video/mp4"></video><span class="tg a">After</span></div>
+     <div class="vcell"><video id="vb" muted playsinline preload="none" poster="assets/img/studio-before-poster-540.webp" width="540" height="960" aria-label="Studio before transformation"></video><span class="tg b">Before</span></div>
+     <div class="vcell"><video id="va" muted playsinline preload="none" poster="assets/img/studio-after-poster-540.webp" width="540" height="960" aria-label="Studio after transformation"></video><span class="tg a">After</span></div>
     </div>
     <figcaption class="vbar"><button class="vbtn" id="vplay" type="button" aria-pressed="false"><svg aria-hidden="true"><use href="#i-play"/></svg><span>Play both</span></button><button class="reset" id="vrestart" type="button">Restart</button><span class="vnote">Before 02 · After 02</span></figcaption>
    </figure>

@@ -26,3 +26,12 @@ Repeats that remain on purpose: lounge-blue-sectional (Furniture and Projects 03
 - Workplaces (4): office-after, office-before, blind-wood-venetian, blind-black-venetian
 - Hospitality (6): bedding-blue-print, bedding-purple-floral, pillow-knot-bed, blanket-cream, curtain-dining-room, blind-navy-zebra (captions name the product or space; no hospitality projects are claimed)
 - Industry Professionals (6): blind-white-slat, curtain-black-marble, blind-geometric-print, curtain-tieback-details, wall-feature-blue-led, lounge-blue-sectional (captions describe supply and installation items; no trade projects are claimed)
+
+## Video renditions (all silent H.264, 29.97 fps, keyframe every 2 s, index at the start of the file)
+| File | Size | Used for |
+|---|---|---|
+| hero.mp4 (720x1280) / hero-m.mp4 (480x854) | 2.8 MB / 1.3 MB | Hero background; -m is sent to phones, slow links |
+| studio-before.mp4 / studio-before-m.mp4 | 0.64 MB / 0.30 MB | Projects 02, Before (14.5 s) |
+| studio-after.mp4 / studio-after-m.mp4 | 3.9 MB / 1.9 MB | Projects 02 After (52.8 s) and Walls gallery |
+| blankets.mp4 / blankets-m.mp4 | 0.66 MB / 0.32 MB | Blankets gallery |
+Posters: hero-poster.webp (desktop) and hero-poster-m.webp (phones), both the first frame of the hero video; studio and blanket posters unchanged.
