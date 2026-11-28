@@ -35,3 +35,9 @@ Repeats that remain on purpose: lounge-blue-sectional (Furniture and Projects 03
 | studio-after.mp4 / studio-after-m.mp4 | 3.9 MB / 1.9 MB | Projects 02 After (52.8 s) and Walls gallery |
 | blankets.mp4 / blankets-m.mp4 | 0.66 MB / 0.32 MB | Blankets gallery |
 Posters: hero-poster.webp (desktop) and hero-poster-m.webp (phones), both the first frame of the hero video; studio and blanket posters unchanged.
+
+## Image variants added for performance
+- Gallery thumbnails: `<name>-240.webp` for every photo used in a Services gallery (31 files).
+- NAJKAD logo: `najkad-logo-450.webp`, `najkad-logo-640.webp`, `najkad-logo.webp` (905 px). Same artwork, background levelled to the page ivory; re-saved as high-quality lossy WebP (101 KB instead of 459 KB).
+- Client logos: `brands/bloocode-technology.webp`, `brands/bloocode-technology-340.webp`, `brands/iseda-studio.webp` (the supplied PNGs stay as fallbacks).
+- Videos and hero posters are unchanged from the video-optimised version.

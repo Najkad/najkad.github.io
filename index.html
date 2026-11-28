@@ -18,9 +18,12 @@
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/img/hero-poster-m.webp" media="(max-width:860px)">
-<link rel="preload" as="image" href="assets/img/hero-poster.webp" media="(min-width:861px)">
+<link rel="preload" href="assets/fonts/cormorant-garamond-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/cormorant-garamond-latin-500-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/img/hero-poster-m.webp" media="(max-width:860px)" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/hero-poster.webp" media="(min-width:861px)" fetchpriority="high">
 <link rel="stylesheet" href="css/styles.css">
+<noscript><style>.hero-media{background:#2B1B10 url(assets/img/hero-poster.webp) center/cover no-repeat}</style></noscript>
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"NAJKAD","description":"Interior decoration brand based in Lagos, Nigeria, serving clients worldwide.","foundingDate":"2015","telephone":["+2349027450918","+2348102480432"],"email":"najkadinterior@yahoo.com","address":{"@type":"PostalAddress","addressLocality":"Lagos","addressCountry":"NG"},"areaServed":"Worldwide","logo":"https://najkad.github.io/assets/img/najkad-logo.webp","sameAs":["https://www.instagram.com/najkad_curtains001","https://www.tiktok.com/@interiordecoratorinlagos"]}</script>
 </head>
@@ -66,11 +69,12 @@
 <!-- 01 HERO -->
 <section class="hero" id="top">
  <div class="hero-media">
-  <video id="heroVid" muted loop playsinline preload="auto" poster="assets/img/hero-poster.webp" aria-hidden="true"></video>
-  <script>/* pick the right-sized hero file before the browser starts downloading; skipped for reduced-motion and data-saver visitors (poster only) */
+  <video id="heroVid" muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <script>/* choose ONE poster and ONE video file for this device before the browser fetches anything; reduced-motion and data-saver visitors get the poster only */
   (function(){var v=document.getElementById('heroVid'),c=navigator.connection||{},m=matchMedia('(max-width:860px)').matches;
+  v.poster='assets/img/hero-poster'+(m?'-m':'')+'.webp';
   if(matchMedia('(prefers-reduced-motion: reduce)').matches||c.saveData)return;
-  var lite=m||/(^|-)(2g|3g)$/.test(c.effectiveType||'');if(m)v.poster='assets/img/hero-poster-m.webp';v.src='assets/video/'+(lite?'hero-m':'hero')+'.mp4';})();</script>
+  var lite=m||/(^|-)(2g|3g)$/.test(c.effectiveType||'');v.src='assets/video/'+(lite?'hero-m':'hero')+'.mp4';})();</script>
  </div>
  <a class="scrollcue hx h5" href="#brands">Scroll</a>
  <div class="wrap">
@@ -83,6 +87,12 @@
  </div>
 </section>
 
+<script>/* start the hero reveal once the first-screen fonts are ready (never later than 1.5 s). The reveal uses keyframe animations, so it always plays. */
+(function(){var d=document.documentElement,f=document.fonts,go=function(){d.classList.add('ready')};
+if(!f||!f.load)return go();
+Promise.race([Promise.all([f.load('500 1em "Cormorant Garamond"'),f.load('italic 500 1em "Cormorant Garamond"'),f.load('600 1em "Cormorant Garamond"'),f.load('400 1em Manrope')]),new Promise(function(r){setTimeout(r,700)})]).then(go,go);
+setTimeout(go,1500)})();</script>
+
 <!-- 02 BRANDS -->
 <section class="brands pad" id="brands" aria-labelledby="brands-h">
  <div class="wrap brands-grid">
@@ -92,8 +102,8 @@
    <p class="lede" style="margin-top:1.2rem">A selection of the organisations we’ve worked with, alongside the many homeowners, offices and private clients who prefer not to be named.</p>
   </div>
   <ul class="brand-list rv" style="--d:.15s">
-   <li><a class="bl bl--bloo" href="http://bloocodetechnology.com" target="_blank" rel="noopener" aria-label="Bloocode Technology (opens their website in a new tab)"><img class="lg lg-bloo" src="assets/img/brands/bloocode-technology.png" width="674" height="152" loading="lazy" alt="Bloocode Technology"><svg aria-hidden="true"><use href="#i-ne"/></svg></a></li>
-   <li><a class="bl bl--iseda" href="https://www.linkedin.com/company/iseda-app/" target="_blank" rel="noopener" aria-label="Iseda Studio (opens their LinkedIn page in a new tab)"><img class="lg lg-iseda" src="assets/img/brands/iseda-studio.png" width="264" height="260" loading="lazy" alt="Iseda Studio"><svg aria-hidden="true"><use href="#i-ne"/></svg></a></li>
+   <li><a class="bl bl--bloo" href="http://bloocodetechnology.com" target="_blank" rel="noopener" aria-label="Bloocode Technology (opens their website in a new tab)"><picture><source type="image/webp" srcset="assets/img/brands/bloocode-technology-340.webp 340w, assets/img/brands/bloocode-technology.webp 674w" sizes="210px"><img class="lg lg-bloo" src="assets/img/brands/bloocode-technology.png" width="674" height="152" loading="lazy" decoding="async" alt="Bloocode Technology"></picture><svg aria-hidden="true"><use href="#i-ne"/></svg></a></li>
+   <li><a class="bl bl--iseda" href="https://www.linkedin.com/company/iseda-app/" target="_blank" rel="noopener" aria-label="Iseda Studio (opens their LinkedIn page in a new tab)"><picture><source type="image/webp" srcset="assets/img/brands/iseda-studio.webp"><img class="lg lg-iseda" src="assets/img/brands/iseda-studio.png" width="264" height="260" loading="lazy" decoding="async" alt="Iseda Studio"></picture><svg aria-hidden="true"><use href="#i-ne"/></svg></a></li>
    <li><div class="bl bl--jasper"><span class="mk-jasper">Jasper Sterling Heights</span><span class="mk-sub">Estate</span></div></li>
   </ul>
  </div>
@@ -103,7 +113,7 @@
 <section class="pad" id="about">
  <div class="wrap about-grid">
   <div class="about-img">
-   <div class="mask mk rv"><img src="assets/img/living-room-wall-unit-1280.webp" srcset="assets/img/living-room-wall-unit-640.webp 640w,assets/img/living-room-wall-unit-1280.webp 1080w" sizes="(max-width:860px) 90vw,40vw" width="1080" height="810" loading="lazy" style="object-position:62% 50%" alt="Living room styled by NAJKAD, with a tiered ceiling, shelving wall and grey seating"></div>
+   <div class="mask mk rv"><img src="assets/img/living-room-wall-unit-1280.webp" srcset="assets/img/living-room-wall-unit-640.webp 640w,assets/img/living-room-wall-unit-1280.webp 1080w" sizes="(max-width:860px) 90vw,40vw" width="1080" height="810" loading="lazy" decoding="async" style="object-position:62% 50%" alt="Living room styled by NAJKAD, with a tiered ceiling, shelving wall and grey seating"></div>
    <div class="est" aria-label="Established 2015"><small>EST.</small>2015</div>
   </div>
   <div class="about-copy rv">
@@ -112,7 +122,7 @@
    <p class="lead">Every space tells a story. The way it feels, the details it holds and the people who bring it to life.</p>
    <p>Since 2015, NAJKAD has been helping individuals and businesses shape their spaces through thoughtful interior decoration, carefully selected furnishings and personalised styling.</p>
    <p>From a single room that needs a fresh perspective to an entire environment ready for transformation, we bring together colour, texture, furnishings and detail to create spaces that feel considered, comfortable and distinctly personal.</p>
-   <img class="logo" src="assets/img/najkad-logo.webp" width="905" height="758" loading="lazy" alt="NAJKAD logo: a gold letter N with curtain, blinds and cushion">
+   <img class="logo" src="assets/img/najkad-logo-640.webp" srcset="assets/img/najkad-logo-450.webp 450w, assets/img/najkad-logo-640.webp 640w, assets/img/najkad-logo.webp 905w" sizes="(max-width:860px) 72vw, 300px" width="905" height="758" loading="lazy" decoding="async" alt="NAJKAD logo: a gold letter N with curtain, blinds and cushion">
   </div>
  </div>
 </section>
@@ -133,7 +143,7 @@
 
   <article class="proj a rv" aria-labelledby="p1t">
    <div class="meta"><div class="no">01</div><h3 id="p1t">Office interior</h3><p>A completed office interior, shown before and after.</p><p class="hint">Drag the divider, or use the arrow keys.</p></div>
-   <figure class="cmp"><div class="ba" data-ba><img src="assets/img/office-before-1280.webp" width="1280" height="1707" loading="lazy" alt="The office before NAJKAD’s work"><img class="after" src="assets/img/office-after-1280.webp" width="1086" height="1448" loading="lazy" alt="The finished office with a long workstation desk, wooden detailing and warm lighting"><span class="tg b">Before</span><span class="tg a">After</span><input type="range" min="0" max="100" value="50" aria-label="Office comparison: slide to reveal the after photograph"><div class="bar"><span class="knob"><svg aria-hidden="true"><use href="#i-lr"/></svg></span></div></div>
+   <figure class="cmp"><div class="ba" data-ba><img src="assets/img/office-before-1280.webp" srcset="assets/img/office-before-640.webp 640w, assets/img/office-before-1280.webp 1280w" sizes="(max-width:860px) 92vw, 600px" width="1280" height="1707" loading="lazy" decoding="async" alt="The office before NAJKAD’s work"><img class="after" src="assets/img/office-after-1280.webp" srcset="assets/img/office-after-640.webp 640w, assets/img/office-after-1280.webp 1086w" sizes="(max-width:860px) 92vw, 600px" width="1086" height="1448" loading="lazy" decoding="async" alt="The finished office with a long workstation desk, wooden detailing and warm lighting"><span class="tg b">Before</span><span class="tg a">After</span><input type="range" min="0" max="100" value="50" aria-label="Office comparison: slide to reveal the after photograph"><div class="bar"><span class="knob"><svg aria-hidden="true"><use href="#i-lr"/></svg></span></div></div>
    <figcaption class="ba-foot"><span>Before 01 · After 01</span><button class="reset" type="button">Reset</button></figcaption></figure>
   </article>
 
@@ -141,8 +151,8 @@
    <div class="meta"><div class="no">02</div><h3 id="p2t">Studio interior</h3><p>A bare room transformed into a studio with acoustic wall panels and a warm LED ceiling line, shown in the original videos.</p><p class="hint">Silent videos. Press play to start; the shorter one holds its last frame.</p></div>
    <figure class="vcmp" id="vcmp">
     <div class="vgrid">
-     <div class="vcell"><video id="vb" muted playsinline preload="none" poster="assets/img/studio-before-poster-540.webp" width="540" height="960" aria-label="Studio before transformation"></video><span class="tg b">Before</span></div>
-     <div class="vcell"><video id="va" muted playsinline preload="none" poster="assets/img/studio-after-poster-540.webp" width="540" height="960" aria-label="Studio after transformation"></video><span class="tg a">After</span></div>
+     <div class="vcell"><video id="vb" muted playsinline preload="none" data-poster="assets/img/studio-before-poster-540.webp" width="540" height="960" aria-label="Studio before transformation"></video><span class="tg b">Before</span></div>
+     <div class="vcell"><video id="va" muted playsinline preload="none" data-poster="assets/img/studio-after-poster-540.webp" width="540" height="960" aria-label="Studio after transformation"></video><span class="tg a">After</span></div>
     </div>
     <figcaption class="vbar"><button class="vbtn" id="vplay" type="button" aria-pressed="false"><svg aria-hidden="true"><use href="#i-play"/></svg><span>Play both</span></button><button class="reset" id="vrestart" type="button">Restart</button><span class="vnote">Before 02 · After 02</span></figcaption>
    </figure>
@@ -150,9 +160,9 @@
 
   <article class="proj c rv" aria-labelledby="p3t">
    <div class="meta"><div class="no">03</div><h3 id="p3t">Living &amp; lounge interiors</h3><p>Feature walls, layered lighting and bold upholstery in residential living spaces.</p></div>
-   <button class="pic p1" data-g="living" data-i="1" aria-label="Open larger view: royal-blue sectional lounge"><img src="assets/img/lounge-blue-sectional-640.webp" width="640" height="853" loading="lazy" alt="Lounge with a royal-blue sectional, white accent chair and framed art"></button>
-   <button class="pic p2" data-g="living" data-i="2" aria-label="Open larger view: feature wall with blue LED lighting"><img src="assets/img/wall-feature-blue-led-640.webp" width="640" height="863" loading="lazy" alt="Dark feature wall with built-in shelving, TV and blue LED lighting"></button>
-   <button class="pic p3" data-g="living" data-i="0" aria-label="Open larger view: illuminated feature wall"><img src="assets/img/wall-feature-tv-panel-1280.webp" width="1280" height="1699" loading="lazy" style="object-position:50% 38%" alt="Living room with an illuminated marble-effect TV wall and tiered ceiling"></button>
+   <button class="pic p1" data-g="living" data-i="1" aria-label="Open larger view: royal-blue sectional lounge"><img src="assets/img/lounge-blue-sectional-640.webp" width="640" height="853" loading="lazy" decoding="async" alt="Lounge with a royal-blue sectional, white accent chair and framed art"></button>
+   <button class="pic p2" data-g="living" data-i="2" aria-label="Open larger view: feature wall with blue LED lighting"><img src="assets/img/wall-feature-blue-led-640.webp" width="640" height="863" loading="lazy" decoding="async" alt="Dark feature wall with built-in shelving, TV and blue LED lighting"></button>
+   <button class="pic p3" data-g="living" data-i="0" aria-label="Open larger view: illuminated feature wall"><img src="assets/img/wall-feature-tv-panel-1280.webp" srcset="assets/img/wall-feature-tv-panel-640.webp 640w, assets/img/wall-feature-tv-panel-1280.webp 1280w" sizes="(max-width:860px) 94vw, 62vw" width="1280" height="1699" loading="lazy" decoding="async" style="object-position:50% 38%" alt="Living room with an illuminated marble-effect TV wall and tiered ceiling"></button>
   </article>
  </div>
 </section>
@@ -160,7 +170,7 @@
 <!-- 06 DIFFERENCE -->
 <section class="diff pad" id="difference">
  <div class="wrap diff-grid">
-  <div class="diff-img mk rv"><img src="assets/img/curtain-taupe-pinch-pleat-1280.webp" width="1284" height="1554" loading="lazy" alt="Taupe pinch-pleat curtains fitted by NAJKAD"></div>
+  <div class="diff-img mk rv"><img src="assets/img/curtain-taupe-pinch-pleat-1280.webp" srcset="assets/img/curtain-taupe-pinch-pleat-640.webp 640w, assets/img/curtain-taupe-pinch-pleat-1280.webp 1280w" sizes="(max-width:860px) 92vw, 40vw" width="1284" height="1554" loading="lazy" decoding="async" alt="Taupe pinch-pleat curtains fitted by NAJKAD"></div>
   <div class="rv">
    <p class="label">The NAJKAD Difference</p>
    <h2 class="h2">Beautiful spaces begin with <em>thoughtful choices.</em></h2>

@@ -30,5 +30,12 @@ Bloocode Technology and Iseda Studio use the official logos supplied by the clie
 Each video has a desktop file and a small `-m` file for phones and slow links; `js/main.js` picks one when the page loads. Hero: `hero.mp4` (720x1280, 2.8 MB) and `hero-m.mp4` (480x854, 1.3 MB). Studio and blanket videos: 540x960 and 360x640. All are H.264, 29.97 fps, silent, a keyframe every 2 seconds, with the index at the front of the file so playback starts before the download finishes. Only the hero downloads on first load; the others start loading shortly before their section scrolls into view or when played.
 To re-encode a replacement clip: `ffmpeg -i input.mov -an -vf scale=540:-2,format=yuv420p -c:v libx264 -preset medium -profile:v high -level 4.0 -crf 29 -maxrate 900k -bufsize 1800k -g 60 -keyint_min 30 -movflags +faststart output.mp4`
 
+## Performance notes
+- Photos exist at several widths (`-240`, `-640`, `-1280`; the logo at 450/640/905). Pages pick the smallest that stays sharp via `srcset`. When adding a gallery photo, export the 240, 640 and 1280 widths.
+- The service galleries create their images only for the picture being shown (and the next one once someone uses the gallery).
+- Fonts are self-hosted and the four used on the first screen are preloaded. The hero reveal waits for them (never more than 0.7 s) so text does not jump.
+- The hero poster and video file are chosen by a small inline script right after the video tag in `index.html`. Reduced-motion and data-saver visitors get the poster only.
+- Client logos are WebP with the supplied PNG kept as a fallback.
+
 ## Editing content
 Service text and gallery images are in the `CATS` array at the top of `js/main.js`. Add an image by exporting 640w and 1280w WebP files to `assets/img` and adding `im('file-name','alt text')`.

@@ -81,14 +81,14 @@ CATS.forEach((c,k)=>{
 });
 function initGal(c){
   const root=$(`.gal[data-cat="${c.id}"]`),frame=$('.gal-frame',root),chips=$('.chips',root),arr=$('.arrows',root),th=$('.thumbs',root);
-  let g=0,i=0,els=[],play=null;
+  let g=0,i=0,els=[],play=null,engaged=false; /* engaged = the visitor has used this gallery, so it may fetch ahead */
   const items=()=>c.groups[g].i;
   function render(){
     frame.innerHTML='';els=[];
     items().forEach((m,k)=>{
       let e;
-      if(m.t==='img'){e=new Image();e.src=`${IMG}${m.n}-1280.webp`;e.alt=m.alt;e.loading=k?'lazy':'eager'}
-      else{e=document.createElement('video');e.poster=`${IMG}${m.p}.webp`;e.src=vsrc(m.f);e.preload='none';e.muted=true;e.loop=true;e.playsInline=true;e.setAttribute('aria-label',m.alt)}
+      if(m.t==='img'){e=new Image();e.alt=m.alt;e.decoding='async'}
+      else{e=document.createElement('video');e.src=vsrc(m.f);e.preload='none';e.muted=true;e.loop=true;e.playsInline=true;e.setAttribute('aria-label',m.alt)}
       frame.append(e);els.push(e);
     });
     const z=document.createElement('button');z.className='zoom';z.setAttribute('aria-label','Open larger view');z.onclick=()=>{const m=items()[i];if(m.t==='img')vOpen(items(),i,z);};frame.append(z);
@@ -96,27 +96,36 @@ function initGal(c){
     play.onclick=()=>{const v=els[i];v.controls=true;v.muted=false;v.play();play.hidden=true};
     chips.innerHTML=c.groups.length>1?c.groups.map((x,k)=>`<button class="chip" aria-pressed="${k===g}" data-g="${k}">${x.l}</button>`).join(''):'';
     const n=items().length;arr.hidden=th.hidden=n<2;
-    th.innerHTML=n>1?items().map((m,k)=>`<button aria-label="Show item ${k+1}" data-k="${k}"><img src="${m.t==='img'?`${IMG}${m.n}-640.webp`:`${IMG}${m.p}.webp`}" alt="" width="58" height="72" loading="lazy"></button>`).join(''):'';
+    th.innerHTML=n>1?items().map((m,k)=>`<button aria-label="Show item ${k+1}" data-k="${k}"><img src="${m.t==='img'?`${IMG}${m.n}-240.webp`:`${IMG}${m.p}.webp`}" alt="" width="58" height="72" loading="lazy" decoding="async"></button>`).join(''):'';
     show(0);
+  }
+  /* only the picture being shown (and, once the visitor engages, the next one) is downloaded */
+  function load(k,eager){
+    const m=items()[k],e=els[k];if(!e||e.dataset.ld)return;e.dataset.ld=1;
+    if(m.t==='img'){e.loading=eager?'eager':'lazy';e.sizes='(max-width:860px) 92vw, 46vw';e.srcset=`${IMG}${m.n}-640.webp 640w, ${IMG}${m.n}-1280.webp 1280w`;e.src=`${IMG}${m.n}-1280.webp`}
+    else e.poster=`${IMG}${m.p}.webp`;
   }
   function show(k){
     i=(k+items().length)%items().length;
     els.forEach((e,j)=>{e.classList.toggle('on',j===i);if(j!==i&&e.pause){e.pause();e.controls=false}});
+    load(i,engaged);if(engaged)load((i+1)%items().length,true);
     const isV=items()[i].t==='vid';play.hidden=!isV;frame.querySelector('.zoom').style.display=isV?'none':'';
     $('.cnt',root).textContent=`${i+1} / ${items().length}`;
     $$('.thumbs button',root).forEach((b,j)=>b.toggleAttribute('aria-current',j===i)&&0);
     $$('.thumbs button',root).forEach((b,j)=>b.setAttribute('aria-current',j===i));
   }
-  chips.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;g=+b.dataset.g;render()};
-  arr.onclick=e=>{const b=e.target.closest('[data-d]');if(b)show(i+ +b.dataset.d)};
-  th.onclick=e=>{const b=e.target.closest('[data-k]');if(b)show(+b.dataset.k)};
+  chips.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;engaged=true;g=+b.dataset.g;render()};
+  arr.onclick=e=>{const b=e.target.closest('[data-d]');if(b){engaged=true;show(i+ +b.dataset.d)}};
+  th.onclick=e=>{const b=e.target.closest('[data-k]');if(b){engaged=true;show(+b.dataset.k)}};
+  engage[c.id]=()=>{engaged=true;load(i,true);load((i+1)%items().length,true)};
   render();
 }
+const engage={};
 const inited=new Set();const ensure=c=>{if(!inited.has(c.id)){inited.add(c.id);initGal(c)}};
 ensure(CATS[0]);
 $$('.panel[hidden]').forEach(()=>{});
 function selectCat(id,focus){
-  ensure(CATS.find(c=>c.id===id));
+  ensure(CATS.find(c=>c.id===id));engage[id]&&engage[id]();
   CATS.forEach(c=>{const on=c.id===id,t=$('#tab-'+c.id),p=$('#pn-'+c.id);t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;
     if(on){p.hidden=false;p.classList.remove('enter');void p.offsetWidth;if(!reduce)p.classList.add('enter')}else{p.hidden=true;$$('video',p).forEach(v=>v.pause())}});
   const t=$('#tab-'+id);t.scrollIntoView({block:'nearest',inline:'center',behavior:reduce?'auto':'smooth'});if(focus)t.focus();
@@ -141,7 +150,7 @@ const AUD_SETS=[
  [im('bedding-blue-print','Blue patterned bedding set (bedding supply)'),im('bedding-purple-floral','Purple floral bedding set (bedding supply)'),im('pillow-knot-bed','Knot pillows on a white bed (home accessories)'),im('blanket-cream','Cream ribbed blanket (home accessories)'),im('curtain-dining-room','Dining area with floor-length curtains'),im('blind-navy-zebra','Navy zebra blind (window blinds)')],
  [im('blind-white-slat','White slatted blind being fitted (installation)'),im('curtain-black-marble','Marble-print curtains fitted in a hallway'),im('blind-geometric-print','Geometric print blind sample'),im('curtain-tieback-details','Curtain tie-back details'),im('wall-feature-blue-led','Feature wall with shelving and LED lighting (wall decoration)'),im('lounge-blue-sectional','Sectional sofa (furniture supply)')]
 ];
-$('#aud').innerHTML=AUD.map((a,k)=>`<div class="card"><img src="${IMG}${a[2]}-640.webp" alt="${a[3]}" loading="lazy"><button class="tog" aria-expanded="false" aria-label="${a[0]}: show details"></button><div class="ct"><span class="no">0${k+1}</span><h3>${a[0]}</h3><div class="more"><p>${a[1]}</p><a class="link" href="#services" data-cat="${a[4]}">${a[5]} ${ic('arrow')}</a><button type="button" class="link set-btn" data-set="${k}" aria-haspopup="dialog">Explore related images ${ic('arrow')}</button></div></div></div>`).join('');
+$('#aud').innerHTML=AUD.map((a,k)=>`<div class="card"><img src="${IMG}${a[2]}-640.webp" alt="${a[3]}" loading="lazy" decoding="async"><button class="tog" aria-expanded="false" aria-label="${a[0]}: show details"></button><div class="ct"><span class="no">0${k+1}</span><h3>${a[0]}</h3><div class="more"><p>${a[1]}</p><a class="link" href="#services" data-cat="${a[4]}">${a[5]} ${ic('arrow')}</a><button type="button" class="link set-btn" data-set="${k}" aria-haspopup="dialog">Explore related images ${ic('arrow')}</button></div></div></div>`).join('');
 $('#aud').addEventListener('click',e=>{
   const l=e.target.closest('a[data-cat]');if(l){selectCat(l.dataset.cat);return}
   const s=e.target.closest('.set-btn');if(s){vOpen(AUD_SETS[+s.dataset.set],0,s);return}
@@ -179,7 +188,8 @@ $$('[data-ba]').forEach(ba=>{
     v.addEventListener('ended',()=>{if(vs.every(x=>x.ended)){intent=false;label(false)}});
   });
   /* start fetching just before the section scrolls into view (unless data-saver is on) */
-  if(!conn.saveData)new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){vs.forEach(v=>{if(v.preload==='none')v.preload='auto'});o.disconnect()}},{rootMargin:'700px 0px'}).observe($('#vcmp'));
+  /* posters and (unless data-saver is on) video data are requested just before the section scrolls into view */
+  new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){vs.forEach(v=>{if(v.dataset.poster)v.poster=v.dataset.poster;if(!conn.saveData&&v.preload==='none')v.preload='auto'});o.disconnect()}},{rootMargin:'700px 0px'}).observe($('#vcmp'));
   new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting&&intent&&playing()){stop()}}),{threshold:.1}).observe($('#vcmp'));
 })();
 
@@ -210,7 +220,6 @@ $$('.rv,.mk').forEach(el=>ro.observe(el));
 
 /* hero */
 const hv=$('#heroVid');
-requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.add('ready')));
 if(hv.getAttribute('src')&&!reduce&&!conn.saveData){
   /* start only once the browser reports it can play through (or after 3 s on slow links), so the first seconds are not choppy */
   let ok=false,vis=true;
